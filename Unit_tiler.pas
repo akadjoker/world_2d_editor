@@ -8,13 +8,11 @@ uses
 
 type
   TForm7 = class(TForm)
-    timer: TThreadedTimer;
     StatusBar1: TStatusBar;
-    procedure timerTimer(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure FormPaint(Sender: TObject);
   private
     { Private declarations }
   public
@@ -40,7 +38,44 @@ begin
 
 end;
 
-procedure TForm7.timerTimer(Sender: TObject);
+procedure TForm7.FormShow(Sender: TObject);
+begin
+             tileimagew:=Width;
+             tileimageh:=Height;
+
+TilesAcross:=(tileimagew div tilew) * (tileimageh div tileh);
+
+if (assigned( tileimage)) then
+begin
+  tileimagew:=tileimage.GetWidth();
+  tileimageh:=tileimage.GetHeight();
+  TilesAcross:=(tileimagew div tilew);
+  Width:=tileimagew;
+  Height:=tileimageh;
+
+ // caption:='Tiler - Total of Tiles'+ inttostr(TilesAcross);
+
+end;
+
+
+
+
+end;
+
+procedure TForm7.FormMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+mx:=x;
+my:=y;
+Repaint;
+
+StatusBar1.Panels[0].Text:='Index:'+IntToStr(TileSelect);
+
+
+end;
+
+procedure TForm7.FormPaint(Sender: TObject);
+
 var
  finalx,finaly,px,py, x,y:integer;
 begin
@@ -71,21 +106,8 @@ begin
 
 
 
-
-         StatusBar1.Panels.Items[0].Text:=
-     'X:'+inttostr (gridx)+
-      '-- Y:'+inttostr(gridy);
-
-
-          StatusBar1.Panels.Items[1].Text:=
-     'X:'+inttostr (px)+
-    '-- Y:'+inttostr(py);
-
     TileSelect:=finalx+finaly*TilesAcross;
 
-     StatusBar1.Panels.Items[2].Text:=inttostr(TileSelect);
-   // 'Mouse X:'+inttostr(trunc(mx/worldscale))+
-   // '--Mouse Y:'+inttostr(trunc(my/worldscale));
 
       Canvas.Brush.Style:=bsClear;
       Canvas.Pen.Color:=clblack;
@@ -126,44 +148,7 @@ begin
 
 
  // form7.Image1.Canvas.CopyRect(rect(0,0,120,120),image1.Canvas,rect(0,0,120,120));
-     
 
-end;
-
-procedure TForm7.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  timer.Enabled:=false;
-end;
-
-procedure TForm7.FormShow(Sender: TObject);
-begin
-             tileimagew:=Width;
-             tileimageh:=Height;
-
-TilesAcross:=(tileimagew div tilew) * (tileimageh div tileh);
-
-if (assigned( tileimage)) then
-begin
-  tileimagew:=tileimage.GetWidth();
-  tileimageh:=tileimage.GetHeight();
-  TilesAcross:=(tileimagew div tilew);
-  Width:=tileimagew;
-  Height:=tileimageh;
-
- // caption:='Tiler - Total of Tiles'+ inttostr(TilesAcross);
-
-end;
-
-  timer.Enabled:=true;
-
-
-end;
-
-procedure TForm7.FormMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-mx:=x;
-my:=y;
 
 end;
 

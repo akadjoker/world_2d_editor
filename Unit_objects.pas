@@ -24,6 +24,7 @@ type
     Edit2: TEdit;
     Button1: TButton;
     JvOfficeColorPanel1: TJvOfficeColorPanel;
+    btn1: TButton;
     procedure CheckBox1Click(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
     procedure ScrollBar1Change(Sender: TObject);
@@ -34,6 +35,8 @@ type
     procedure JvOfficeColorPanel1ColorChange(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
 
   private
     { Private declarations }
@@ -178,6 +181,21 @@ procedure TForm4.Button1Click(Sender: TObject);
 begin
 gridw:=strtoint(edit1.Text);
 gridh:=strtoint(edit2.Text);
+end;
+
+procedure TForm4.FormCreate(Sender: TObject);
+begin
+edit1.Text:=inttostr(gridw);
+edit2.Text:=inttostr(gridh);
+
+end;
+
+procedure TForm4.btn1Click(Sender: TObject);
+begin
+//  gridw:=strtoint(edit1.Text);
+//gridh:=strtoint(edit2.Text);
+
+close;
 end;
 
 end.

@@ -8,6 +8,10 @@ uses
   Menus, StdCtrls,global,Unit_edit,graphicex,Unit_objects, JvBaseDlg, JvImageDlg, XPMan, ExtDlgs;
 
 type
+
+TwordlMode=(ModeObjects,ModeTiles);
+
+
   TForm1 = class(TForm)
     timer: TThreadedTimer;
     Panel1: TPanel;
@@ -28,18 +32,18 @@ type
     XPManifest1: TXPManifest;
     OpenPictureDialog1: TOpenPictureDialog;
     N4: TMenuItem;
-    EditMode1: TMenuItem;
-    N5: TMenuItem;
-    New2: TMenuItem;
     Objects1: TMenuItem;
     Edit1: TMenuItem;
-    N6: TMenuItem;
-    Add1: TMenuItem;
     Images1: TMenuItem;
     Add2: TMenuItem;
     iles1: TMenuItem;
     LoadLayer1: TMenuItem;
     Editor1: TMenuItem;
+    EditMode2: TMenuItem;
+    Object1: TMenuItem;
+    Tiles2: TMenuItem;
+    N5: TMenuItem;
+    ool1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure timerTimer(Sender: TObject);
@@ -50,8 +54,6 @@ type
       Y: Integer);
     procedure Panel1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure Add1Click(Sender: TObject);
-    procedure Show1Click(Sender: TObject);
     procedure EditMode1Click(Sender: TObject);
     procedure Grid1Click(Sender: TObject);
     procedure FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -65,6 +67,11 @@ type
     procedure Save1Click(Sender: TObject);
     procedure Load1Click(Sender: TObject);
     procedure ExportXML1Click(Sender: TObject);
+    procedure FormKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Object1Click(Sender: TObject);
+    procedure Tiles2Click(Sender: TObject);
+    procedure ool1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -80,11 +87,20 @@ var
     RC1        : HGLRC;
     DC1        : HDC;
 
+   shiftkey:Boolean=false;
+   ctrlkey:Boolean=false;
+
+
+   worldmode:TwordlMode;
+
+   lastx,lasty:single;
+   distx,disty:single;
+
 
 
 implementation
 
-uses Unit_grid, Unit_Images, Unit_tiler, Unit_tilemap;
+uses Unit_grid, Unit_Images, Unit_tiler, Unit_tilemap, Unit_world;
 
 {$R *.dfm}
 
@@ -100,6 +116,11 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
 InitOpenGL;
 
+distx:=0;
+
+disty:=0;
+
+worldmode:=ModeObjects;
 
 
    Defaults;
@@ -119,11 +140,13 @@ ActivateRenderingContext(DC2, RC2);
   glViewPort(0,0,panel1.Width,panel1.Height);
   SetTransform(1,0,0,0);
 
-   wordlw:=2000;
-   worldh:=panel1.Height;
+   wordlw:=40*32;
+   worldh:=40*32;
    worldx:=0;//wordlw/2;
    worldy:=0;//worldh/2;
 
+      glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
       level:=Tlevel.Create;
@@ -144,7 +167,8 @@ end;
 procedure TForm1.timerTimer(Sender: TObject);
 var
   x,y:integer;
-  finalx,finaly:integer;
+ finalx,finaly:integer;
+ boundw,boundh:Single;
 begin
   FScreenWidth:=panel1.Width;
   FScreenHeight:=panel1.Height;
@@ -155,18 +179,43 @@ begin
     glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
 
 
-  //worldx := -mousex+120 div 2-wordlw div 2;
-
-//  Engine.Y := -Y+Engine.Height div 2-Height div 2;
-
-    if worldx<0 then worldx:=0;
-    if worldy<0 then worldy:=0;
-
-    if worldx>wordlw then worldx:=wordlw;
-    if worldy>worldh then worldy:=worldh;
 
 
+    //boundh:=(Height+gridh)-worldh;
 
+  //  if (worldh<form1.Height) then
+
+  //  boundh:=(worldh+gridh*2)-Form1.Height; //224
+ //   boundh:=(worldh+gridh)-Form1.Height;
+
+ //   boundh:=(Form1.Height+gridh);
+
+
+
+
+
+
+
+    if worldy<=-(Height/2) then worldy:=--(Height/2)
+    else
+    if worldy>=(worldh-(Height/2)) then  worldy:=(worldh-(Height/2));
+
+//    if worldy>=(worldh+(Height-gridh)) then worldy:=(worldh+(Height-gridh));
+
+
+
+
+
+
+    if worldx<=-(Width/2) then worldx:=-(Width/2)
+    else
+    //f worldx>=boundw then  worldx:=boundw;
+
+     if worldx>=(wordlw-(Width/2))  then worldx:=(wordlw-(Width/2));
+
+
+  //  Caption:=IntToStr(Trunc(worldx))+'<>'+IntToStr(Trunc(wordlw))+'=='+IntToStr(Trunc(worldy))+'<>'+IntToStr(Trunc(boundh));
+  //  Caption:=IntToStr(Trunc(worldy))+'<>'+IntToStr(Trunc(boundh))+'<>'+IntToStr(Trunc(worldh));
 
 
     posx_global:=worldx+mousex/worldscale;
@@ -237,10 +286,65 @@ begin
 
 
 
+if (worldmode=ModeObjects) then
+begin
+  objects_mode:=true;
+  
+case Unit_objects.Form4.RadioGroup1.ItemIndex of
+0:begin      //place
+if (assigned( globalimage)) and (objects_mode) then
+begin
+//  DrawEx(globalimage,0,objx-(globalimage.PatternWidth/2),objy-(globalimage.PatternHeight/2),0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+DrawEx(globalimage,0,objx,objy,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+
+//  DrawEx(globalimage,0,posx_grid,posy_grid,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+//  DrawEx(globalimage,0,posx_global,posy_global,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+
+
+end;
+end;
+1:begin  //delete
+  if (assigned(select_obj)) then
+begin
+  select_obj.isselect:=false;
+end;
+
+
+select_obj:=level.Select(trunc(objx),trunc(objy));
+if (assigned(select_obj)) then
+begin
+  select_obj.isselect:=true;
+  if mousepress then
+  begin
+    select_obj.Active:=false;
+    select_obj:=nil;
+  end;
+end;
+end;
+2:begin
+end;
+
+
+end;
+
+
+end else ///if (worldmode=ModeObjects) ///
+if (worldmode=ModeTiles) then
+begin
+  objects_mode:=false;
+  if (assigned(tilemap)) then
+    begin
+      if (shiftkey) then tilemap.SetTile(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),TileSelect);
+      if (mousepress) then tilemap.SetTile(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),TileSelect);
+      if (ctrlkey) then tilemap.SetTile(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),-1);
+    end;
+
+end;
 
 
 
 
+{
  case form5.RadioGroup2.ItemIndex of
  0://objects
  begin
@@ -250,7 +354,9 @@ case Unit_objects.Form4.RadioGroup1.ItemIndex of
 0:begin
 if (assigned( globalimage)) and (objects_mode) then
 begin
-  DrawEx(globalimage,0,objx-(globalimage.PatternWidth/2),objy-(globalimage.PatternHeight/2),0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+//  DrawEx(globalimage,0,objx-(globalimage.PatternWidth/2),objy-(globalimage.PatternHeight/2),0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+DrawEx(globalimage,0,objx,objy,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
+
 //  DrawEx(globalimage,0,posx_grid,posy_grid,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
 //  DrawEx(globalimage,0,posx_global,posy_global,0,0,objscale,objscale,objflipx,objflipy,$FFFFFFFF,BLEND_DEFAULT);
 
@@ -287,11 +393,16 @@ end;
 
     if (assigned(tilemap)) then
     begin
+      if (shiftkey) then tilemap.SetTile(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),TileSelect);
      if (mousepress) then tilemap.SetTile(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),TileSelect);
+    // if (mousepress) then tilemap.SetTile(Trunc(posx_global),Trunc(posy_global),TileSelect);
+
     end;
 
 end;
 end;
+
+}
 
     if (assigned(tilemap)) then
     begin
@@ -300,7 +411,9 @@ end;
 
        level.Render;
 
-      
+
+       if (drawgrid) then
+       begin
       for x:=0 to (wordlw div gridw) do
       begin
       Gfx_RenderLine(x*gridw,0,x*gridw,worldh,gridcolor);
@@ -309,9 +422,12 @@ end;
      begin
       Gfx_RenderLine(0,y*gridh,wordlw,y*gridh,gridcolor);
      end;
+     end;
      Gfx_RenderRect(-1,-1,wordlw-1,worldh-1,0,0,1);
 
-      Gfx_RenderRect(objx,objy,gridw,gridh,1,0,1);
+    Gfx_RenderRect(objx,objy,gridw,gridh,1,0,1);
+   //   Gfx_RenderRect(trunc(tilex_grid+(worldx/tilew)),trunc(tiley_grid+(worldy/tileh)),gridh,1,1,0);
+
      // Gfx_RenderRect(posx_global,posy_global,gridw,gridh,1,0,1);
 
 
@@ -323,29 +439,7 @@ end;
       
     SwapBuffers(DC1);
   //  wglMakeCurrent(0,0);
-{
-    wglMakeCurrent(dc2, rc2);
 
-      glClearColor(0.4,0,0.4,1);
-      glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
-
-
-    glLoadIdentity();
-    glPushMatrix();
-    glTranslatef (0.0, 0.0, 0.0);
-
-    glcolor4f(1,0,0,1);
-    glBegin (GL_TRIANGLES);
-    glVertex3f (0.0, 0.0, 0.0);
-    glVertex3f (0.0, 10.0, 0.0);
-    glVertex3f (10.0, 10.0, 0.0);
-    glEnd();
-
-    glPopMatrix();
-
-    SwapBuffers(DC2);
-    wglMakeCurrent(0,0);
-    }
 
     System_Loop;
 end;
@@ -358,27 +452,26 @@ end;
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-caption:=inttostr(key);
+//caption:=inttostr(key);
+
+if (Key=16) then
+shiftkey:=True;
+
+if (Key=17)then
+ctrlkey:=True;
 
 
-if key=38 then worldy:=worldy-gridh;
-if key=40 then worldy:=worldy+gridh;
-
-if key=37 then worldx:=worldx-gridw;
+if (key=37)then worldx:=worldx-gridw;
 if key=39 then worldx:=worldx+gridw;
 
+if (key=38)then  worldy:=worldy-gridh;
+if (key=40) then worldy:=worldy+gridh;
 
- case form5.RadioGroup2.ItemIndex of
- 0://objects
- begin
 
- end;
- 1://pchats
- begin
 
- end;
- 2:  //tiles
- begin
+
+if (worldmode=ModeTiles) then
+begin
     if (assigned(tilemap)) then
     begin
 
@@ -397,30 +490,53 @@ if key=39 then worldx:=worldx+gridw;
  end;
 
 
- end;
 
- {
-if key=38 then keymovey:=keymovey-gridh;
-if key=40 then keymovey:=keymovey+gridh;
 
-if key=37 then keymovex:=keymovex-gridw;
-if key=39 then keymovex:=keymovex+gridw;
-  }
 end;
 
 procedure TForm1.Panel1MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
+  var
+    len:Single;
 begin
 mousex:=x;
 mousey:=y;
+if (mousemidpress) then
+begin
+distx:=lastx-mousex;
+disty:=lasty-mousey;
+
+
+ len := sqrt(distx * distx + disty * disty);
+distx :=distx/ len;
+disty :=disty/ len;
+
+worldx:=worldx+distx*5;
+worldy:=worldy+disty*5;
+
+end;
+
+
 end;
 
 procedure TForm1.Panel1MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-mousex:=x;
-mousey:=y;
-mousepress:=true;
+lastx:=x;
+lasty:=y;
+
+//mousex:=x;
+//mousey:=y;
+
+if Button=mbLeft then mousepress:=true;
+
+if Button=mbMiddle  then mousemidpress:=True;
+
+
+
+
+if ( worldmode=ModeObjects) then
+begin
 
  if Button=mbLeft then
    begin
@@ -441,35 +557,10 @@ if (assigned(select_obj)) then select_obj.isselect:=true;
     end;
 
  end;
-
-
-
 end;
 
-procedure TForm1.Add1Click(Sender: TObject);
-var
-  png:TPNGGraphic;
-  tga:TTargaGraphic;
-  
-  image:TGraphicExGraphic;
-begin
-form4.Button2Click(form4);
-{
-OpenPictureDialog1.InitialDir:= ExtractFilePath(ParamStr(0))+'Sprites';
-if OpenPictureDialog1.Execute then
-begin
-  level.LoadImage(OpenPictureDialog1.FileName);
-  Form4.JvThumbView1.AddFromFile(OpenPictureDialog1.FileName);
-  Form4.JvThumbView1.Update;
 
-  glBindTexture(GL_TEXTURE_2D, 0);
-end;
- }
-end;
 
-procedure TForm1.Show1Click(Sender: TObject);
-begin
-//Unit_sprites.Form3.Show;
 end;
 
 procedure TForm1.EditMode1Click(Sender: TObject);
@@ -504,7 +595,14 @@ procedure TForm1.Panel1MouseUp(Sender: TObject; Button: TMouseButton;
 
 begin
   mousepress:=false;
+  mousemidpress:=false;
+mousex:=x;
+mousey:=y;
 
+
+
+if (worldmode=ModeObjects) then
+begin
 
   if (Button=mbLeft) then
   begin
@@ -522,6 +620,7 @@ end;
 end;
 
 end;
+end;//ModeObjects;
 
 
 
@@ -570,5 +669,34 @@ begin
 Level.SaveXML(path);
 end;
 
+procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+shiftkey:=False;
+ctrlkey:=False;
+end;
+
+procedure TForm1.Object1Click(Sender: TObject);
+begin
+Object1.Checked:=True;
+Tiles2.Checked:=False;
+worldmode:=ModeObjects;
+
+
+
+end;
+
+procedure TForm1.Tiles2Click(Sender: TObject);
+begin
+Object1.Checked:=false;
+Tiles2.Checked:=true;
+worldmode:=ModeTiles;
+
+end;
+
+procedure TForm1.ool1Click(Sender: TObject);
+begin
+form6.show;
+end;
+
 end.
- 

@@ -1,8 +1,8 @@
 object Form5: TForm5
   Left = 342
   Top = 170
-  Width = 707
-  Height = 415
+  Width = 365
+  Height = 266
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSizeToolWin
   Caption = 'Edit Mode'
@@ -12,117 +12,118 @@ object Form5: TForm5
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  FormStyle = fsStayOnTop
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 160
-    Top = 72
+    Top = 12
     Width = 59
     Height = 13
     Caption = 'World Width'
   end
   object Label2: TLabel
     Left = 160
-    Top = 104
+    Top = 44
     Width = 62
     Height = 13
     Caption = 'World Height'
   end
-  object RadioGroup2: TRadioGroup
-    Left = 8
-    Top = 16
-    Width = 441
-    Height = 41
-    Caption = 'Edit Mode'
-    Columns = 3
-    ItemIndex = 0
-    Items.Strings = (
-      'Objects'
-      'Paths'
-      'Tiles')
-    TabOrder = 0
-    OnClick = RadioGroup2Click
+  object lbl1: TLabel
+    Left = 160
+    Top = 80
+    Width = 50
+    Height = 13
+    Caption = 'Grid Width'
+  end
+  object lbl2: TLabel
+    Left = 160
+    Top = 112
+    Width = 53
+    Height = 13
+    Caption = 'Grid Height'
   end
   object Button1: TButton
-    Left = 176
-    Top = 208
+    Left = 136
+    Top = 188
     Width = 75
     Height = 25
-    Caption = 'Close'
-    TabOrder = 1
+    Caption = 'OK'
+    TabOrder = 0
     OnClick = Button1Click
   end
   object Edit1: TEdit
     Left = 24
-    Top = 72
+    Top = 12
     Width = 121
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
     Text = 'Edit1'
   end
   object Edit2: TEdit
     Left = 24
-    Top = 112
+    Top = 43
     Width = 121
     Height = 21
-    TabOrder = 3
+    TabOrder = 2
     Text = 'Edit2'
   end
   object Button2: TButton
     Left = 248
-    Top = 88
+    Top = 28
     Width = 75
     Height = 25
     Caption = 'Set'
-    TabOrder = 4
+    TabOrder = 3
     OnClick = Button2Click
   end
   object CheckBox1: TCheckBox
     Left = 24
-    Top = 152
+    Top = 148
     Width = 97
     Height = 17
     Caption = 'Draw Tiles'
     Checked = True
     State = cbChecked
-    TabOrder = 5
+    TabOrder = 4
   end
   object CheckBox2: TCheckBox
-    Left = 144
-    Top = 152
+    Left = 160
+    Top = 148
     Width = 97
     Height = 17
     Caption = 'Draw Grid'
-    TabOrder = 6
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
+    OnClick = CheckBox2Click
   end
-  object Button3: TButton
+  object edt1: TEdit
     Left = 24
-    Top = 272
-    Width = 75
-    Height = 25
-    Caption = 'savetilemap'
+    Top = 78
+    Width = 121
+    Height = 21
+    TabOrder = 6
+    Text = 'edt1'
+  end
+  object edt2: TEdit
+    Left = 24
+    Top = 106
+    Width = 121
+    Height = 21
     TabOrder = 7
-    OnClick = Button3Click
+    Text = 'edt2'
   end
-  object Button4: TButton
-    Left = 120
-    Top = 272
+  object btn1: TButton
+    Left = 248
+    Top = 96
     Width = 75
     Height = 25
-    Caption = 'Button4'
+    Caption = 'Set'
     TabOrder = 8
-    OnClick = Button4Click
-  end
-  object Memo1: TMemo
-    Left = 280
-    Top = 144
-    Width = 361
-    Height = 193
-    Lines.Strings = (
-      'Memo1')
-    ScrollBars = ssBoth
-    TabOrder = 9
+    OnClick = btn1Click
   end
 end

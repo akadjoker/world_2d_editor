@@ -895,8 +895,12 @@ var
 
 procedure Gfx_SetBlendMode(const blend:integer);
 begin
-	glDisable(GL_ALPHA_TEST);
-	glEnable(GL_BLEND); // Enable Blending
+	//glDisable(GL_ALPHA_TEST);
+ //	glEnable(GL_BLEND); // Enable Blending
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 
     if ((Blend and BLEND_ALPHABLEND) <> (FCurBlendMode and BLEND_ALPHABLEND)) then
   begin

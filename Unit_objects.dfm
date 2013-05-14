@@ -1,9 +1,11 @@
 object Form4: TForm4
-  Left = 494
-  Top = 203
-  Width = 443
-  Height = 420
+  Left = 507
+  Top = 103
+  BorderIcons = [biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Objects'
+  ClientHeight = 382
+  ClientWidth = 392
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,18 +13,19 @@ object Form4: TForm4
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 427
+    Width = 392
     Height = 382
     ActivePage = TabSheet2
     Align = alClient
     TabOrder = 0
     object TabSheet2: TTabSheet
-      Caption = 'TabSheet2'
+      Caption = 'Transform'
       ImageIndex = 1
       object Label1: TLabel
         Left = 56
@@ -153,6 +156,15 @@ object Form4: TForm4
         Properties.CustomColorFont.Style = []
         OnColorChange = JvOfficeColorPanel1ColorChange
         OnColorButtonClick = JvOfficeColorPanel1ColorButtonClick
+      end
+      object btn1: TButton
+        Left = 168
+        Top = 320
+        Width = 75
+        Height = 25
+        Caption = 'Ok'
+        TabOrder = 7
+        OnClick = btn1Click
       end
     end
   end

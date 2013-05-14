@@ -5,7 +5,7 @@ interface
 
 
 uses
- SysUtils,gl;
+ SysUtils,dglOpenGL;
 
 
 

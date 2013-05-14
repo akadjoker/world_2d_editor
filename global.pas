@@ -108,6 +108,7 @@ var
    keymovex,keymovey:single;
        level:TLevel;
 
+       drawgrid:Boolean=True;
        snap_objects:boolean=true;
        gridcolor:cardinal;
        gridr,gridg,gridb:single;
@@ -132,6 +133,8 @@ var
 
        select_obj:GMObject;
        mousepress:boolean;
+       mousemidpress:Boolean;
+
 
        tilepicture:Tbitmap;
              tileimage:TTexture=nil;

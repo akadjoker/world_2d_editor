@@ -4,6 +4,7 @@ object Form7: TForm7
   Width = 574
   Height = 396
   Cursor = crSizeAll
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Tiler'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,8 +13,9 @@ object Form7: TForm7
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnClose = FormClose
+  Position = poDesktopCenter
   OnMouseDown = FormMouseDown
+  OnPaint = FormPaint
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -32,11 +34,5 @@ object Form7: TForm7
       item
         Width = 100
       end>
-  end
-  object timer: TThreadedTimer
-    Interval = 1
-    OnTimer = timerTimer
-    Left = 120
-    Top = 64
   end
 end

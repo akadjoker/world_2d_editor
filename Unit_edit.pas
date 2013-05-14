@@ -8,7 +8,6 @@ uses
 
 type
   TForm5 = class(TForm)
-    RadioGroup2: TRadioGroup;
     Button1: TButton;
     Edit1: TEdit;
     Edit2: TEdit;
@@ -17,15 +16,19 @@ type
     Button2: TButton;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
-    Button3: TButton;
-    Button4: TButton;
-    Memo1: TMemo;
+    edt1: TEdit;
+    edt2: TEdit;
+    lbl1: TLabel;
+    lbl2: TLabel;
+    btn1: TButton;
     procedure Button1Click(Sender: TObject);
     procedure RadioGroup2Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure btn1Click(Sender: TObject);
+    procedure CheckBox2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -41,12 +44,17 @@ implementation
 
 procedure TForm5.Button1Click(Sender: TObject);
 begin
+wordlw:=strtoint(edit1.Text);
+worldh:=strtoint(edit2.Text);
+gridw:=strtoint(edt1.Text);
+gridh:=strtoint(edt2.Text);
+
 close;
 end;
 
 procedure TForm5.RadioGroup2Click(Sender: TObject);
 begin
-
+    {
 case RadioGroup2.ItemIndex of
 
 0:
@@ -69,6 +77,7 @@ Unit_objects.Form4.RadioGroup1.Enabled:=false;
 
 end;
 end;
+}
 end;
 
 procedure TForm5.Button2Click(Sender: TObject);
@@ -81,6 +90,9 @@ procedure TForm5.FormCreate(Sender: TObject);
 begin
 edit1.Text:=inttostr(wordlw);
 edit2.Text:=inttostr(worldh);
+
+edt1.Text:=inttostr(gridw);
+edt2.Text:=inttostr(gridh);
 
 end;
 
@@ -107,4 +119,17 @@ begin
 
 end;
 
+procedure TForm5.btn1Click(Sender: TObject);
+begin
+gridw:=strtoint(edt1.Text);
+gridh:=strtoint(edt2.Text);
+
+end;
+
+procedure TForm5.CheckBox2Click(Sender: TObject);
+begin
+drawgrid:=CheckBox2.Checked;
+end;
+
 end.
+

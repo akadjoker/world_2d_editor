@@ -3328,7 +3328,7 @@ end;
 procedure THGETileMap.SaveToStream(Stream  : TStream);
 var
   i:integer;
-
+  tile:TTile;
 begin
   WriteStr(stream,FImage.filename);
   Stream.Write(Width     , SizeOf(integer));
@@ -3342,7 +3342,22 @@ begin
 
 for i:=0 to FNumTiles-1 do
 begin
-   Stream.Write(FMap[i]  , SizeOf(TTile));
+  // Stream.Write(FMap[i]  , SizeOf(TTile));
+
+  tile:=FMap[i];
+   // MirrorX, MirrorY: Boolean;
+   //  id:integer;
+    // Solid:boolean;
+
+  Stream.Write(tile.id  , SizeOf(integer));
+  Stream.Write(tile.MirrorX  , SizeOf(boolean));
+  Stream.Write(tile.MirrorY  , SizeOf(boolean));
+  Stream.Write(tile.Solid  , SizeOf(boolean));
+
+
+
+//  Stream.Write(tile  , SizeOf(TTile));
+
 end;
 
 
@@ -3351,6 +3366,7 @@ procedure THGETileMap.LoadFromStream(Stream  : TStream);
 var
   fname:string;
   i:integer;
+  tile:TTile;
 begin
   ReadStr(stream,fname);
 
@@ -3375,7 +3391,14 @@ begin
 
    for i:=0 to FNumTiles-1 do
    begin
-    Stream.Read(FMap[i]  , SizeOf(TTile));
+
+  Stream.read(tile.id  , SizeOf(integer));
+  Stream.Read(tile.MirrorX  , SizeOf(boolean));
+  Stream.Read(tile.MirrorY  , SizeOf(boolean));
+  Stream.Read(tile.Solid  , SizeOf(boolean));
+  FMap[i]:=tile;
+
+//    Stream.Read(FMap[i]  , SizeOf(TTile));
    end;
 
 
@@ -3439,6 +3462,8 @@ begin
      SetMapSize(0, 0);
 end;
 constructor THGETileMap.Create(worldw,worldh,tilew,tileh:integer;texture:TTexture);
+var
+  px,py:Integer;
 begin
 
 
@@ -3450,6 +3475,12 @@ begin
 
    SetMapSize(worldw,worldh);
    FDoTile:=false;
+
+
+   for px:=0 to worldw-1 do
+   for py:=0 to worldh-1 do
+   SetTile(px,py,-1);
+
 
 
    FImage:=texture;
@@ -3515,6 +3546,9 @@ var
    StartX, StartY, EndX, EndY, StartX_, StartY_, OfsX, OfsY, dWidth, dHeight: Integer;
 begin
      if (FMapWidth <= 0) or (FMapHeight <= 0) then Exit;
+
+      //  glEnable(GL_BLEND);
+    //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 

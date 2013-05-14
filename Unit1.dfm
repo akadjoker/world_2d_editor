@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 214
-  Top = 44
+  Left = 330
+  Top = 92
   Width = 957
-  Height = 508
-  Caption = 'Form1'
+  Height = 576
+  Caption = 'No limits 2d level Editor By Luis Santos AKA DJOKER'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,6 +15,7 @@ object Form1: TForm1
   OnClose = FormClose
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   OnMouseWheel = FormMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
@@ -22,7 +23,7 @@ object Form1: TForm1
     Left = 0
     Top = 0
     Width = 941
-    Height = 450
+    Height = 518
     Cursor = crCross
     Align = alClient
     Caption = 'Panel1'
@@ -32,7 +33,7 @@ object Form1: TForm1
     OnMouseUp = Panel1MouseUp
     object StatusBar1: TStatusBar
       Left = 1
-      Top = 430
+      Top = 498
       Width = 939
       Height = 19
       Panels = <
@@ -97,22 +98,12 @@ object Form1: TForm1
     end
     object World1: TMenuItem
       Caption = 'World'
-      object New2: TMenuItem
-        Caption = 'New'
-      end
-      object N5: TMenuItem
-        Caption = '-'
-      end
       object Grid1: TMenuItem
         Caption = 'Propertis'
         OnClick = Grid1Click
       end
       object N4: TMenuItem
         Caption = '-'
-      end
-      object EditMode1: TMenuItem
-        Caption = 'Edit Mode'
-        OnClick = EditMode1Click
       end
     end
     object iles1: TMenuItem
@@ -125,6 +116,13 @@ object Form1: TForm1
         Caption = 'Editor'
         OnClick = Editor1Click
       end
+      object N5: TMenuItem
+        Caption = '-'
+      end
+      object ool1: TMenuItem
+        Caption = 'Tool'
+        OnClick = ool1Click
+      end
     end
     object Objects1: TMenuItem
       Caption = 'Objects'
@@ -132,19 +130,24 @@ object Form1: TForm1
         Caption = 'Edit'
         OnClick = Edit1Click
       end
-      object N6: TMenuItem
-        Caption = '-'
-      end
-      object Add1: TMenuItem
-        Caption = 'Add'
-        OnClick = Add1Click
-      end
     end
     object Images1: TMenuItem
       Caption = 'Images'
       object Add2: TMenuItem
         Caption = 'Add'
         OnClick = Add2Click
+      end
+    end
+    object EditMode2: TMenuItem
+      Caption = 'World Mode'
+      object Object1: TMenuItem
+        Caption = 'Object'
+        Checked = True
+        OnClick = Object1Click
+      end
+      object Tiles2: TMenuItem
+        Caption = 'Tiles'
+        OnClick = Tiles2Click
       end
     end
   end
