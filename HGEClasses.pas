@@ -3470,7 +3470,7 @@ begin
    VisibleWidth:= worldw * tilew;
    VisibleHeight:=worldh * tileh;
 
-
+     
 
 
    SetMapSize(worldw,worldh);
